@@ -24,15 +24,14 @@ jobs:
 
       - name: Update Files Based on Issue Input
         run: |
-          # Example: Update a placeholder in README.md with the custom message from the issue.
-          # Extract the custom message from the issue body.
-          # (In a real scenario, you might parse JSON or use a known delimiter if you have multiple inputs.)
-          #
-          # For demonstration, suppose your README.md contains the placeholder: %%CUSTOM_MESSAGE%% 
-          # You can replace it with the custom message provided in the issue.
+          # Assign the issue body to a variable
+          ISSUE_BODY="${{ github.event.issue.body }}"
+          
+          # For demonstration, suppose your README.md contains the placeholder: %%CUSTOM_MESSAGE%%
+          # We'll replace it with the custom message provided in the issue.
           
           # Extract the custom message from the issue body.
-          # Use awk to find the line after '### Custom Message'
+          # Using awk to find the line after '### Custom Message'
           CUSTOM_MESSAGE=$(echo "$ISSUE_BODY" | awk '
               BEGIN { found=0 }
               {
@@ -43,7 +42,7 @@ jobs:
                   found=1
                 }
               }')
-
+          
           echo "Custom message extracted: $CUSTOM_MESSAGE"
           
           # Replace placeholder in README.md (or any file) with the custom message.
