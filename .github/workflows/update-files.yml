@@ -120,6 +120,9 @@ jobs:
           # Update Dockerfile
           sed -i "s|%%MODEL%%|$MODEL_PART|g" Dockerfile
 
+          # Set the version as an output for later steps.
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
       - name: Commit and Push Changes
         run: |
           git add .
@@ -140,3 +143,17 @@ jobs:
               issue_number: context.issue.number,
               state: "closed"
             });
+
+      - name: Create Release
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const version = '${{ steps.updatefiles.outputs.version }}';
+            const release = await github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: version,
+              name: `${version}`,
+              generate_release_notes: true
+            });
+            console.log(`Created release: ${release.data.html_url}`);            
