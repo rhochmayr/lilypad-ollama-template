@@ -182,6 +182,7 @@ jobs:
           REPO_NAME=$(echo "${GITHUB_REPOSITORY}" | cut -d'/' -f2)
           echo "Computed REPO_NAME: $REPO_NAME"
           echo "REPO_NAME=${REPO_NAME}" >> $GITHUB_ENV
+          echo "VERSION=${{ needs.update-and-release.outputs.release_tag }}"
           echo "VERSION=${{ needs.update-and-release.outputs.release_tag }}" >> $GITHUB_ENV
           echo "Environment variables set:"
           echo "  REPO_NAME=$(printenv REPO_NAME)"
