@@ -4,7 +4,7 @@ This README provides instructions for building and running the Ollama DeepSeek-R
 
 ## Custom Message Test
 
-%%CUSTOM_MESSAGE%%
+https://ollama.com/library/deepseek-r1:7b
 
 ## Prerequisites
 
