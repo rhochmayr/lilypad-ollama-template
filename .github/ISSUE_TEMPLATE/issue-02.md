@@ -1,5 +1,5 @@
 ---
-name: 🐞 Bug
+name: 🐞 Bug 02
 about: File a bug/issue
 title: '[BUG] <title>'
 labels: Bug, Needs Triage

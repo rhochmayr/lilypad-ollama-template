@@ -1,4 +1,4 @@
-name: 🐞 Bug
+name: 🐞 Bug 01
 description: File a bug/issue
 title: "[BUG] <title>"
 labels: ["Bug", "Needs Triage"]
