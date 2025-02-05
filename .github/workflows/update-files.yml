@@ -150,7 +150,8 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
-            const core = require('@actions/core');
+            // Remove the duplicate declaration of 'core'
+            // const core = require('@actions/core');
             const version = '${{ steps.updatefiles.outputs.version }}';
             console.log(`Creating release with version: ${version}`);
             if (!version) {
@@ -167,6 +168,7 @@ jobs:
             // Explicitly set the output so it is available to downstream jobs
             core.setOutput('tag', version);
             return { tag: version };
+    
 
   docker-build:
     needs: update-and-release
