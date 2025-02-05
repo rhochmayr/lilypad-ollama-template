@@ -168,14 +168,15 @@ jobs:
             // Explicitly set the output so it is available to downstream jobs
             core.setOutput('tag', version);
             return { tag: version };
-    
 
   docker-build:
     needs: update-and-release
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
+      - name: Checkout Repository at Release Tag
         uses: actions/checkout@v3
+        with:
+          ref: ${{ needs.update-and-release.outputs.release_tag }}
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
@@ -183,15 +184,15 @@ jobs:
       - name: Set ENV variables
         run: |
           echo "Setting REPO_NAME and VERSION for Docker build..."
-          # Use 'cut' to extract the repository name.
           REPO_NAME=$(echo "${GITHUB_REPOSITORY}" | cut -d'/' -f2)
           echo "Computed REPO_NAME: $REPO_NAME"
           echo "REPO_NAME=${REPO_NAME}" >> $GITHUB_ENV
-          echo "VERSION=${{ needs.update-and-release.outputs.release_tag }}"
           echo "VERSION=${{ needs.update-and-release.outputs.release_tag }}" >> $GITHUB_ENV
-          echo "Environment variables set:"
-          echo "  REPO_NAME=$(printenv REPO_NAME)"
-          echo "  VERSION=$(printenv VERSION)"
+
+      - name: Verify ENV variables
+        run: |
+          echo "Verified REPO_NAME: $(printenv REPO_NAME)"
+          echo "Verified VERSION: $(printenv VERSION)"
 
       - name: Log in to GitHub Container Registry
         uses: docker/login-action@v2
@@ -208,6 +209,6 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository_owner }}/${{ env.REPO_NAME }}:latest
             ghcr.io/${{ github.repository_owner }}/${{ env.REPO_NAME }}:${{ env.VERSION }}
-      
+
       - name: Log out of GitHub Container Registry
         run: docker logout ghcr.io
