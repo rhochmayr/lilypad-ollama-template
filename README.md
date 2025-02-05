@@ -5,7 +5,7 @@ This README provides instructions for building and running the Ollama %%MODEL%% 
 ## Complete Setup
 
 To complete the repository setup, open the following issue:    
-[Complete Repository Setup](/issues/new?template=complete_setup.yml)
+[Complete Repository Setup](../../issues/new?template=complete_setup.yml)
 
 ## Prerequisites
 
