@@ -50,7 +50,7 @@ jobs:
           
           # Replace placeholder in README.md (or any file) with the custom message.
           if [ -n "$CUSTOM_MESSAGE" ]; then
-            sed -i "s/%%CUSTOM_MESSAGE%%/$CUSTOM_MESSAGE/g" README.md
+            sed -i "s|%%CUSTOM_MESSAGE%%|$CUSTOM_MESSAGE|g" README.md
           else
             echo "No custom message found, skipping file update."
           fi
