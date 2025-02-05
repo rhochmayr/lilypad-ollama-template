@@ -1,6 +1,6 @@
-# Ollama llama3.2 (3b)
+# Ollama %%MODEL_NAME%% (%%MODEL_TAG%%)
 
-This README provides instructions for building and running the Ollama llama3.2:3b model Docker container and using Lilypad CLI for running on the Lilypad network.
+This README provides instructions for building and running the Ollama %%MODEL%% model Docker container and using Lilypad CLI for running on the Lilypad network.
 
 ## Complete Setup
 
@@ -19,14 +19,14 @@ To complete the repository setup, open the following issue:
 
 2. Build the Docker image:
    ```
-   docker build -t lilypad-ollama-template .
+   docker build -t %%REPO_NAME%% .
    ```
 
 3. Run the container:
 
    Basic run with GPU support:
    ```
-   docker run --gpus all lilypad-ollama-template "your prompt here"
+   docker run --gpus all %%REPO_NAME%% "your prompt here"
    ```
 
 ## Running on Lilypad Network
@@ -36,14 +36,14 @@ To complete the repository setup, open the following issue:
 To run on the local development network:
 
 ```
-go run . run --network dev github.com/rhochmayr/lilypad-ollama-template:0.0.1 --web3-private-key <private-key> -i Prompt="your prompt here"
+go run . run --network dev github.com/%%REPOSITORY_OWNER%%/%%REPO_NAME%%:%%VERSION%% --web3-private-key <private-key> -i Prompt="your prompt here"
 ```
 
 Replace `<admin_key>` with the admin key found in `hardhat/utils/accounts.ts`.
 
 Example:
 ```
-go run . run --network dev github.com/rhochmayr/lilypad-ollama-template:0.0.1 --web3-private-key <private-key> -i Prompt="A haiku about Lilypad, a decentralized GPU network."
+go run . run --network dev github.com/%%REPOSITORY_OWNER%%/%%REPO_NAME%%:%%VERSION%% --web3-private-key <private-key> -i Prompt="A haiku about Lilypad, a decentralized GPU network."
 ```
 
 ### Using Lilypad Main Network
@@ -51,20 +51,20 @@ go run . run --network dev github.com/rhochmayr/lilypad-ollama-template:0.0.1 --
 To run on the main Lilypad network:
 
 ```
-lilypad run github.com/rhochmayr/lilypad-ollama-template:0.0.1 -i Prompt="your prompt here"
+lilypad run github.com/%%REPOSITORY_OWNER%%/%%REPO_NAME%%:%%VERSION%% -i Prompt="your prompt here"
 ```
 
 Example:
 ```
-lilypad run github.com/rhochmayr/lilypad-ollama-template:0.0.1 -i Prompt="A haiku about Lilypad, a decentralized GPU network."
+lilypad run github.com/%%REPOSITORY_OWNER%%/%%REPO_NAME%%:%%VERSION%% -i Prompt="A haiku about Lilypad, a decentralized GPU network."
 ```
 
 ## Notes
 
 - Ensure you have the necessary permissions and resources to run Docker containers with GPU support.
-- The module version (`0.0.1`) may be updated. Check for the latest version before running.
+- The module version (`%%VERSION%%`) may be updated. Check for the latest version before running.
 
 ## Dependencies and Credits
 
 - [Ollama](https://ollama.com/)
-- [llama3.2](https://ollama.com/library/llama3.2:3b)
+- [%%MODEL_NAME%%](%%MODEL_URL%%)
