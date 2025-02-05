@@ -1,0 +1,17 @@
+name: Complete Setup
+description: Complete the setup of the repository.
+title: "Complete Setup"
+labels: [setup]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for setting up the repository! Please provide the details below so we can update your repository automatically.
+
+  - type: input
+    id: custom-message
+    attributes:
+      label: "Custom Message"
+      description: "This message will be inserted into the README.md (or other files) as needed."
+      placeholder: "Enter your custom message"

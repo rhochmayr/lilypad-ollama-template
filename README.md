@@ -2,6 +2,10 @@
 
 This README provides instructions for building and running the Ollama DeepSeek-R1:7b model Docker container and using Lilypad CLI for running on the Lilypad network.
 
+## Custom Message Test
+
+%%CUSTOM_MESSAGE%% 
+
 ## Prerequisites
 
 - Docker installed on your system

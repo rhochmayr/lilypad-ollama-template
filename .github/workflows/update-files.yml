@@ -1,0 +1,54 @@
+name: Update Files on Complete Setup Issue
+
+on:
+  issues:
+    types: [opened, edited]
+
+jobs:
+  update-files:
+    runs-on: ubuntu-latest
+    if: github.event.issue.title == 'Complete Setup'
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set Up Git Config
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Display Issue Details (Debug)
+        run: |
+          echo "Issue title: ${{ github.event.issue.title }}"
+          echo "Issue body: ${{ github.event.issue.body }}"
+
+      - name: Update Files Based on Issue Input
+        run: |
+          # Example: Update a placeholder in README.md with the custom message from the issue.
+          # Extract the custom message from the issue body.
+          # (In a real scenario, you might parse JSON or use a known delimiter if you have multiple inputs.)
+          #
+          # For demonstration, suppose your README.md contains the placeholder: %%CUSTOM_MESSAGE%% 
+          # You can replace it with the custom message provided in the issue.
+          
+          # Extract the custom message from the issue body.
+          # (Assuming the custom message is on a line starting with "Custom Message:" in the issue body.)
+          CUSTOM_MESSAGE=$(echo "${{ github.event.issue.body }}" | grep -i 'Custom Message:' | sed 's/Custom Message:[[:space:]]*//I')
+          echo "Custom message extracted: $CUSTOM_MESSAGE"
+          
+          # Replace placeholder in README.md (or any file) with the custom message.
+          if [ -n "$CUSTOM_MESSAGE" ]; then
+            sed -i "s/%%CUSTOM_MESSAGE%%/$CUSTOM_MESSAGE/g" README.md
+          else
+            echo "No custom message found, skipping file update."
+          fi
+
+      - name: Commit and Push Changes
+        run: |
+          git add .
+          if ! git diff --cached --quiet; then
+            git commit -m "Updated files based on Complete Setup issue submission"
+            git push
+          else
+            echo "No changes to commit."
+          fi
