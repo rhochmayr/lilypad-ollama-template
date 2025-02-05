@@ -1,11 +1,8 @@
+# >> [Complete Setup](../../issues/new?template=complete_setup.yml) <<
+
 # Ollama %%MODEL_NAME%% (%%MODEL_TAG%%)
 
 This README provides instructions for building and running the Ollama %%MODEL%% model Docker container and using Lilypad CLI for running on the Lilypad network.
-
-## Complete Setup
-
-To complete the repository setup, open the following issue:    
-[Complete Repository Setup](../../issues/new?template=complete_setup.yml)
 
 ## Prerequisites
 
