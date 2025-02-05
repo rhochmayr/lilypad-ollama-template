@@ -27,7 +27,7 @@ jobs:
 
       - name: Update Files Based on Issue Input
         run: |
-          # Assign the issue body to a variable
+          # Assign the issue body to a variable.
           ISSUE_BODY="${{ github.event.issue.body }}"
           
           # For demonstration, suppose your README.md contains the placeholder: %%CUSTOM_MESSAGE%%
@@ -64,3 +64,14 @@ jobs:
           else
             echo "No changes to commit."
           fi
+
+      - name: Close the Issue
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.issues.update({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              state: "closed"
+            })
