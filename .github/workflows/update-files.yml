@@ -32,8 +32,18 @@ jobs:
           # You can replace it with the custom message provided in the issue.
           
           # Extract the custom message from the issue body.
-          # (Assuming the custom message is on a line starting with "Custom Message:" in the issue body.)
-          CUSTOM_MESSAGE=$(echo "${{ github.event.issue.body }}" | grep -i 'Custom Message:' | sed 's/Custom Message:[[:space:]]*//I')
+          # Use awk to find the line after '### Custom Message'
+          CUSTOM_MESSAGE=$(echo "$ISSUE_BODY" | awk '
+              BEGIN { found=0 }
+              {
+                if (found && $0 ~ /[[:alnum:]]/) { 
+                  print; exit 
+                }
+                if ($0 ~ /###[[:space:]]*Custom Message/) {
+                  found=1
+                }
+              }')
+
           echo "Custom message extracted: $CUSTOM_MESSAGE"
           
           # Replace placeholder in README.md (or any file) with the custom message.
