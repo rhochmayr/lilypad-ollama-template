@@ -28,30 +28,94 @@ jobs:
 
       - name: Update Files Based on Issue Input
         run: |
+          #############################
+          # Extract input values from the issue body.
+          #
+          # Our issue form produces an issue body with headers like:
+          #   ### Ollama Model URL
+          #   https://ollama.com/library/deepseek-r1:14b
+          #
+          #   ### Initial Version
+          #   0.1.0
+          #
+          # We use awk to capture the first non-empty line after each header.
+          #############################
+          
           # Assign the issue body to a variable.
           ISSUE_BODY="${{ github.event.issue.body }}"
           
-          # Extract the custom message from the issue body.
-          # Using awk to find the line after '### Custom Message'
-          CUSTOM_MESSAGE=$(echo "$ISSUE_BODY" | awk '
-              BEGIN { found=0 }
-              {
-                if (found && $0 ~ /[[:alnum:]]/) { 
-                  print; exit 
-                }
-                if ($0 ~ /###[[:space:]]*Custom Message/) {
-                  found=1
-                }
-              }')
+          # Extract the Ollama Model URL.
+          MODEL_URL=$(echo "$ISSUE_BODY" | awk '/### Ollama Model URL/{flag=1; next} flag && NF {print; flag=0}')
+          echo "MODEL_URL: $MODEL_URL"
           
-          echo "Custom message extracted: $CUSTOM_MESSAGE"
+          # Extract the Initial Version.
+          VERSION=$(echo "$ISSUE_BODY" | awk '/### Initial Version/{flag=1; next} flag && NF {print; flag=0}')
+          echo "VERSION: $VERSION"
           
-          # Replace placeholder in README.md with the custom message.
-          if [ -n "$CUSTOM_MESSAGE" ]; then
-            sed -i "s|%%CUSTOM_MESSAGE%%|$CUSTOM_MESSAGE|g" README.md
-          else
-            echo "No custom message found, skipping file update."
+          # Fallback: if the MODEL_URL wasn’t found with the header approach, try to grep for a URL.
+          if [ -z "$MODEL_URL" ]; then
+            MODEL_URL=$(echo "$ISSUE_BODY" | grep -o 'https://ollama\.com/library/[^[:space:]]*')
           fi
+          # Trim whitespace.
+          MODEL_URL=$(echo "$MODEL_URL" | xargs)
+          
+          # Parse MODEL_URL to extract:
+          #   - MODEL (e.g., deepseek-r1:14b)
+          #   - MODEL_NAME (e.g., deepseek-r1)
+          #   - MODEL_TAG (e.g., 14b)
+          MODEL_PART=$(echo "$MODEL_URL" | sed 's|https://ollama.com/library/||')
+          MODEL_NAME=$(echo "$MODEL_PART" | cut -d':' -f1)
+          MODEL_TAG=$(echo "$MODEL_PART" | cut -d':' -f2)
+          
+          echo "MODEL_PART: $MODEL_PART"
+          echo "MODEL_NAME: $MODEL_NAME"
+          echo "MODEL_TAG: $MODEL_TAG"
+          
+          # Derive REPOSITORY_OWNER and REPO_NAME from the GitHub context.
+          REPO_FULL="${GITHUB_REPOSITORY}"  # format: owner/repo
+          REPOSITORY_OWNER=$(echo "$REPO_FULL" | cut -d'/' -f1)
+          REPO_NAME=$(echo "$REPO_FULL" | cut -d'/' -f2)
+          
+          echo "REPOSITORY_OWNER: $REPOSITORY_OWNER"
+          echo "REPO_NAME: $REPO_NAME"
+          
+          #############################
+          # Replace placeholders in the files.
+          # Files and placeholders:
+          # 
+          # README.md:
+          #   %%MODEL_NAME%%, %%MODEL_TAG%%, %%MODEL%%,
+          #   %%REPO_NAME%%, %%REPOSITORY_OWNER%%, %%VERSION%%, %%MODEL_URL%%
+          #
+          # run_ollama.sh:
+          #   %%MODEL%%
+          #
+          # lilypad_module.json.tmpl:
+          #   %%REPOSITORY_OWNER%%, %%REPO_NAME%%, %%VERSION%%
+          #
+          # Dockerfile:
+          #   %%MODEL%%
+          #############################
+          
+          # Update README.md
+          sed -i "s|%%MODEL_NAME%%|$MODEL_NAME|g" README.md
+          sed -i "s|%%MODEL_TAG%%|$MODEL_TAG|g" README.md
+          sed -i "s|%%MODEL%%|$MODEL_PART|g" README.md
+          sed -i "s|%%REPO_NAME%%|$REPO_NAME|g" README.md
+          sed -i "s|%%REPOSITORY_OWNER%%|$REPOSITORY_OWNER|g" README.md
+          sed -i "s|%%VERSION%%|$VERSION|g" README.md
+          sed -i "s|%%MODEL_URL%%|$MODEL_URL|g" README.md
+          
+          # Update run_ollama.sh
+          sed -i "s|%%MODEL%%|$MODEL_PART|g" run_ollama.sh
+          
+          # Update lilypad_module.json.tmpl
+          sed -i "s|%%REPOSITORY_OWNER%%|$REPOSITORY_OWNER|g" lilypad_module.json.tmpl
+          sed -i "s|%%REPO_NAME%%|$REPO_NAME|g" lilypad_module.json.tmpl
+          sed -i "s|%%VERSION%%|$VERSION|g" lilypad_module.json.tmpl
+
+          # Update Dockerfile
+          sed -i "s|%%MODEL%%|$MODEL_PART|g" Dockerfile
 
       - name: Commit and Push Changes
         run: |

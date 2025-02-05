@@ -1,10 +1,11 @@
-# Ollama DeepSeek-R1 (7b)
+# Ollama %%MODEL_NAME%% (%%MODEL_TAG%%)
 
-This README provides instructions for building and running the Ollama DeepSeek-R1:7b model Docker container and using Lilypad CLI for running on the Lilypad network.
+This README provides instructions for building and running the Ollama %%MODEL%% model Docker container and using Lilypad CLI for running on the Lilypad network.
 
-## Custom Message Test
+## Complete Setup
 
-https://ollama.com/library/deepseek-r1:7b
+To complete the repository setup, open the following issue: 
+[Complete Repository Setup](.github\ISSUE_TEMPLATE\complete_setup.yml)
 
 ## Prerequisites
 
@@ -18,14 +19,14 @@ https://ollama.com/library/deepseek-r1:7b
 
 2. Build the Docker image:
    ```
-   docker build -t ollama-deepseek-r1-7b .
+   docker build -t %%REPO_NAME%% .
    ```
 
 3. Run the container:
 
    Basic run with GPU support:
    ```
-   docker run --gpus all ollama-deepseek-r1-7b "your prompt here"
+   docker run --gpus all %%REPO_NAME%% "your prompt here"
    ```
 
 ## Running on Lilypad Network
@@ -35,14 +36,14 @@ https://ollama.com/library/deepseek-r1:7b
 To run on the local development network:
 
 ```
-go run . run --network dev github.com/rhochmayr/ollama-deepseek-r1-7b:1.0.0 --web3-private-key <private-key> -i Prompt="your prompt here"
+go run . run --network dev github.com/%%REPOSITORY_OWNER%%/%%REPO_NAME%%:%%VERSION%% --web3-private-key <private-key> -i Prompt="your prompt here"
 ```
 
 Replace `<admin_key>` with the admin key found in `hardhat/utils/accounts.ts`.
 
 Example:
 ```
-go run . run --network dev github.com/rhochmayr/ollama-deepseek-r1-7b:1.0.0 --web3-private-key <private-key> -i Prompt="There are 49 dogs signed up for a dog show. There are 36 more small dogs than large dogs. How many small dogs have signed up to compete?"
+go run . run --network dev github.com/%%REPOSITORY_OWNER%%/%%REPO_NAME%%:%%VERSION%% --web3-private-key <private-key> -i Prompt="A haiku about Lilypad, a decentralized GPU network."
 ```
 
 ### Using Lilypad Main Network
@@ -50,20 +51,20 @@ go run . run --network dev github.com/rhochmayr/ollama-deepseek-r1-7b:1.0.0 --we
 To run on the main Lilypad network:
 
 ```
-lilypad run github.com/rhochmayr/ollama-deepseek-r1-7b:1.0.0 -i Prompt="your prompt here"
+lilypad run github.com/%%REPOSITORY_OWNER%%/%%REPO_NAME%%:%%VERSION%% -i Prompt="your prompt here"
 ```
 
 Example:
 ```
-lilypad run github.com/rhochmayr/ollama-deepseek-r1-7b:1.0.0 -i Prompt="There are 49 dogs signed up for a dog show. There are 36 more small dogs than large dogs. How many small dogs have signed up to compete?"
+lilypad run github.com/%%REPOSITORY_OWNER%%/%%REPO_NAME%%:%%VERSION%% -i Prompt="A haiku about Lilypad, a decentralized GPU network."
 ```
 
 ## Notes
 
 - Ensure you have the necessary permissions and resources to run Docker containers with GPU support.
-- The module version (`1.0.0`) may be updated. Check for the latest version before running.
+- The module version (`%%VERSION%%`) may be updated. Check for the latest version before running.
 
 ## Dependencies and Credits
 
 - [Ollama](https://ollama.com/)
-- [DeepSeek-R1](https://ollama.com/library/deepseek-r1)
+- [%%MODEL_NAME%%](%%MODEL_URL%%)

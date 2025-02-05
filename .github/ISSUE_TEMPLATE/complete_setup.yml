@@ -1,17 +1,21 @@
 name: Complete Setup
-description: Complete the setup of the repository.
+description: Complete repository setup by providing model details and an initial version.
 title: "Complete Setup"
 labels: [setup]
 
 body:
-  - type: markdown
-    attributes:
-      value: |
-        Thank you for setting up the repository! Please provide the details below so we can update your repository automatically.
-
   - type: input
-    id: custom-message
+    id: ollama-model-url
     attributes:
-      label: "Custom Message"
-      description: "This message will be inserted into the README.md (or other files) as needed."
-      placeholder: "Enter your custom message"
+      label: "Ollama Model URL"
+      description: "Enter the Ollama Model URL (e.g., https://ollama.com/library/deepseek-r1:14b)"
+      placeholder: "https://ollama.com/library/deepseek-r1:14b"
+  - type: dropdown
+    id: initial-version
+    attributes:
+      label: "Initial Version"
+      description: "Select the initial version for the repository"
+      options:
+        - "0.0.1"
+        - "0.1.0"
+        - "1.0.0"
