@@ -150,6 +150,7 @@ jobs:
         uses: actions/github-script@v6
         with:
           script: |
+            const core = require('@actions/core');
             const version = '${{ steps.updatefiles.outputs.version }}';
             console.log(`Creating release with version: ${version}`);
             if (!version) {
@@ -163,6 +164,8 @@ jobs:
               generate_release_notes: true
             });
             console.log(`Created release: ${release.data.html_url}`);
+            // Explicitly set the output so it is available to downstream jobs
+            core.setOutput('tag', version);
             return { tag: version };
 
   docker-build:
