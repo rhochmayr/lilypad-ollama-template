@@ -105,7 +105,10 @@ jobs:
           sed -i "s|%%REPOSITORY_OWNER%%|$REPOSITORY_OWNER|g" README.md
           sed -i "s|%%VERSION%%|$VERSION|g" README.md
           sed -i "s|%%MODEL_URL%%|$MODEL_URL|g" README.md
-          
+
+          # Remove the first 2 lines from README.md.
+          sed -i '1,2d' README.md
+
           # Update run_ollama.sh
           sed -i "s|%%MODEL%%|$MODEL_PART|g" run_ollama.sh
           
