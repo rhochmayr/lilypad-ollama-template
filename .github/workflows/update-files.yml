@@ -2,6 +2,7 @@ name: Update Files on Complete Setup Issue
 
 permissions:
   contents: write
+  issues: write
 
 on:
   issues:
@@ -30,9 +31,6 @@ jobs:
           # Assign the issue body to a variable.
           ISSUE_BODY="${{ github.event.issue.body }}"
           
-          # For demonstration, suppose your README.md contains the placeholder: %%CUSTOM_MESSAGE%%
-          # We'll replace it with the custom message provided in the issue.
-          
           # Extract the custom message from the issue body.
           # Using awk to find the line after '### Custom Message'
           CUSTOM_MESSAGE=$(echo "$ISSUE_BODY" | awk '
@@ -48,7 +46,7 @@ jobs:
           
           echo "Custom message extracted: $CUSTOM_MESSAGE"
           
-          # Replace placeholder in README.md (or any file) with the custom message.
+          # Replace placeholder in README.md with the custom message.
           if [ -n "$CUSTOM_MESSAGE" ]; then
             sed -i "s|%%CUSTOM_MESSAGE%%|$CUSTOM_MESSAGE|g" README.md
           else
