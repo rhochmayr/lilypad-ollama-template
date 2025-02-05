@@ -1,17 +1,20 @@
-name: Update Files on Complete Setup Issue
+name: Complete Setup and Docker Build
 
 permissions:
   contents: write
   issues: write
+  packages: write
 
 on:
   issues:
     types: [opened, edited]
 
 jobs:
-  update-files:
+  update-and-release:
     runs-on: ubuntu-latest
     if: github.event.issue.title == 'Complete Setup'
+    outputs:
+      release_tag: ${{ steps.create_release.outputs.tag }}
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -123,7 +126,7 @@ jobs:
 
           # Set the version as an output for later steps.
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-
+      
       - name: Commit and Push Changes
         run: |
           git add .
@@ -146,15 +149,55 @@ jobs:
             });
 
       - name: Create Release
+        id: create_release
         uses: actions/github-script@v6
         with:
           script: |
             const version = '${{ steps.updatefiles.outputs.version }}';
+            if (!version) {
+              throw new Error('Version is empty!');
+            }
             const release = await github.rest.repos.createRelease({
               owner: context.repo.owner,
               repo: context.repo.repo,
               tag_name: version,
-              name: `${version}`,
+              name: `Release ${version}`,
               generate_release_notes: true
             });
-            console.log(`Created release: ${release.data.html_url}`);            
+            console.log(`Created release: ${release.data.html_url}`);
+            return { tag: version };
+        # The outputs from this step can be used in later jobs.
+
+  docker-build:
+    needs: update-and-release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      - name: Set ENV variables
+        run: |
+          echo "REPO_NAME=${GITHUB_REPOSITORY#$GITHUB_REPOSITORY_OWNER/}" >> $GITHUB_ENV
+          echo "VERSION=${{ needs.update-and-release.outputs.release_tag }}" >> $GITHUB_ENV
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push Docker image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/${{ env.REPO_NAME }}:latest
+            ghcr.io/${{ github.repository_owner }}/${{ env.REPO_NAME }}:${{ env.VERSION }}
+
+      - name: Log out of GitHub Container Registry
+        run: docker logout ghcr.io
