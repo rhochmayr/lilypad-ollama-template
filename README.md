@@ -1,4 +1,4 @@
-# >> [Complete Setup](../../issues/new?template=complete_setup.yml) <<
+# >> [Complete Setup](../../issues/new?template=complete_setup.yml)
 
 # Ollama %%MODEL_NAME%% (%%MODEL_TAG%%)
 
